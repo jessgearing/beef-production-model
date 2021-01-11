@@ -1,0 +1,227 @@
+---
+title: "Produktionsmodell für die Schweizer Fleischrinderzucht"
+subtitle: ""
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+header-includes:
+  - \usepackage{pdflscape}
+  - \newcommand{\blandscape}{\begin{landscape}}
+  - \newcommand{\elandscape}{\end{landscape}}
+output: 
+  bookdown::pdf_document2:
+    toc: false
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+s_bib_fn <- 'skeleton.bib'
+if (!fs::file_exists(s_bib_fn)) fs::file_create(s_bib_fn)
+met <- rmdhelp::MendeleyExportToolR6$new(
+  ps_local_bib_file = s_bib_fn,
+  ps_this_rmd_file  = ifelse(rstudioapi::isAvailable(),
+    rstudioapi::getActiveDocumentContext()$path, rprojroot::thisfile()))
+# rmdhelp::show_knit_hook_call()
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+# Erklärung
+Dieses Dokument fasst die Arbeit von `r met$add('Phocas1998')` zusammen. 
+
+
+# Hintergrund
+Die Selektion von potentiellen Elterntieren aufgrund von mehreren Merkmalen ist nur mit einem Gesamtzuchtwert effizient umsetzbar. In einem Gesamtzuchtwert werden die die Zuchtwerte der einzelnen Merkmale aufgrund ihrer wirtschaftlichen Bedeutung gewichtet. Die wirtschaftliche Bedeutung eines Merkmals wird aufgrund der Veränderung des Gewinns in einem Produktionsbetrieb bei einer kleinen Änderung des Populationsmittelwertes des Merkmals. Der Gewinn eines Produktionsbetriebs wird mit einem Produktionsmodell simuliert. Eine mögliches Produktionsmodell für die Fleischrinderzucht wurde von `r met$add('Phocas1998')` vorgeschlagen.
+
+
+# Produktionsmodell
+Für die Entwicklung eines Zuchtziels müssen die drei folgenden Punkte berücksichtigt werden.
+
+1. Für jedes Produktionssystem müssen die charakteristischen Herdenmanagementparameter zusammengestellt werden. Diese Parameter bestehen aus biologischen  (Fruchtbarkeit, Wachstum, Futterverzehr, ...) und wirtschaftlichen (Preise, Kosten, Umsatz, Gewinn, ...) Grössen. Im Artikel von `r met$add('Phocas1998')` wurden fünf Produktionssysteme unterschieden: vier Monate alte Kälber für die Kalbfleischproduktion (i); acht Monate alte Kälber für den Weiterverkauf an Mastbetriebe (ii); Rinder und Bullen in drei verschiedenen Altersklassen (13 und 14 Monate, 19 und 16 Monate, 30 und 18 Monate)(iii-v). 
+
+2. Der Gewinn einer typischen Produktionsherde für ein bestimmtes Produktionssystem muss simuliert werden. Dies bedingt die Differenz zwischen Einnahmen und Ausgaben als eine Funktion der biologischen Parameter der Merkmale unter Selektion.
+
+3. Wirtschaftliche Gewichte sind als partielle Ableitungen der Gewinngleichungen nach dem Mittelwert des entsprechenden Merkmals
+
+Aufgrund der grossen Diversität der verschiedenen Produktionssysteme in Frankreich wurden die wirtschaftlichen Gewichte für jedes Produktionssystem separat ermittelt. Die wirtschaftlichen Gewichte pro Produktionssystem wurden dann anhand der Menge an geschlachteten Tiere in den jeweiligen Produktionssystem gewichtet. So resultierte eine einzigartige Gewichtung der verschiedenen Merkmale über alle Produktionssysteme für eine bestimmte Rasse.
+
+
+## Herdenmanagement
+Die benötigten Daten wurden aus einem Netzwerk von 100 Limousin-Betrieben, welche in unter einer Kontrolle / Beratung standen. Die wirtschaftlichen Parameter wurden für das Jahr 1994 verwendet. 
+
+
+### Merzung und Remontierung
+Die Altersstruktur der Herde ist in der folgenden Darstellung gezeigt.
+
+```{r demography-fig1, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = 'odg/demography-fig1.odg')
+knitr::include_graphics(path = "odg/demography-fig1.png")
+```
+
+Die Anzahl der belegten Kühe pro Jahr wurde über die Zeit konstant gehalten. Die remontierten Rinder wurden von den Kühen ab der zweiten Laktation ausgewählt. Abgesehen von der Herdengrösse wurden alle anderen demographischen Parameter (Trächtigkeitsdauer, Nutzungsdauer und Remontierungsrate) für die verschiedenen Produktionssystem konstant gelassen. Die Verteilungen der Abkalbungen über die Zeit wurden beim Produktionssystem der Kälbermast als gleichverteilt angenommen. Für alle anderen Produktionssystem wurde angenommen, dass die Abkalbungen im Herbst und Winter stattfinden. Für die Kälbermastbetriebe wurde eine Herdengrösse von 30 Kühen angenommen. Die Herdengrössen aller anderen Betriebe wurde auf 50 Kühe gesetzt.
+
+
+### Gesundheit und Reproduktion
+Die folgenden Tabellen geben eine Übersicht über die verwendeten Zahlen zu den Abkalbungen. Diese sind aufgeteilt in die Geburtsablaufsklassen ('Keine Hilfe'  bis 'Kaiserschnitt'). Des weiteren werden die Rinderkalbungen ('1.L') von den Abkalbungen der Kühe ('2.L ff')
+
+```{r tbl-veal, echo=FALSE}
+tbl_veal_kh <- tibble::tibble(Parameter                = c('Häufigkeit', 'Kälbersterblichkeit bis 48h', 'Abgangsrate', 'Kosten (FF) pro Abkalbung'),
+                           `Keine Hilfe (1.L)`      = c(0.82, 0.060, 0.050, 0),
+                           `Keine Hilfe (2.L ff)`   = c(0.92, 0.020, 0.147, 0))
+tbl_veal_lh <- tibble::tibble(Parameter                = c('Häufigkeit', 'Kälbersterblichkeit bis 48h', 'Abgangsrate', 'Kosten (FF) pro Abkalbung'),
+                           `Leichte Hilfe (1.L)`    = c(0.14, 0.070, 0.050, 30),
+                           `Leichte Hilfe (2.L ff)` = c(0.06, 0.022, 0.147, 30))
+tbl_veal_sh <- tibble::tibble(Parameter                = c('Häufigkeit', 'Kälbersterblichkeit bis 48h', 'Abgangsrate', 'Kosten (FF) pro Abkalbung'),
+                             `Schwere Hilfe (1.L)`    = c(0.03, 0.500, 0.500, 500),
+                           `Schwere Hilfe (2.L ff)` = c(0.015, 0.150, 0.500, 500))
+tbl_veal_ks <- tibble::tibble(Parameter                = c('Häufigkeit', 'Kälbersterblichkeit bis 48h', 'Abgangsrate', 'Kosten (FF) pro Abkalbung'),
+                           `Kaiserschnitt (1.L)`    = c(0.01, 0.600, 0.500, 1500),
+                           `Kaiserschnitt (2.L ff)` = c(0.005, 0.206, 0.500, 1500))
+knitr::kable(tbl_veal_kh)
+knitr::kable(tbl_veal_lh)
+knitr::kable(tbl_veal_sh)
+knitr::kable(tbl_veal_ks)
+```
+
+Weitere Kosten, welche durch Krankheiten verursacht werden sind in der folgenden Tabelle aufgelistet.
+
+```{r tbl-health, echo=FALSE}
+tbl_health_int <- tibble::tibble(Tierklasse = c("Kalb bis Alter 48h",
+                                            "Kalb zwischen 3Tg - 3 Mt",
+                                            "Kalb zwischen 4Mt - 8Mt",
+                                            "Jungbullen",
+                                            "Mastrinder",
+                                            "Remonten",
+                                            "Kühe"),
+                             `Häufigkeit von Interventionen` = c(15,
+                                                                 40,
+                                                                 15,
+                                                                 15,
+                                                                 15,
+                                                                 1,
+                                                                 1),
+                             `Kosten pro Intervention (FF)` = c(200,
+                                                                150,
+                                                                165,
+                                                                300,
+                                                                300,
+                                                                800,
+                                                                800)
+                             )
+tbl_health_sb <- tibble::tibble(Tierklasse = c("Kalb bis Alter 48h",
+                                            "Kalb zwischen 3Tg - 3 Mt",
+                                            "Kalb zwischen 4Mt - 8Mt",
+                                            "Jungbullen",
+                                            "Mastrinder",
+                                            "Remonten",
+                                            "Kühe"),
+                             `Systematische Behandlung (FF)` = c(0,
+                                                                 0,
+                                                                 25,
+                                                                 65,
+                                                                 65,
+                                                                 40,
+                                                                 70),
+                             `Andere Kosten (FF)` = c(0,
+                                                      20,
+                                                      20,
+                                                      "$3*0.35*D_1$",
+                                                      "$2*0.35*D_2$",
+                                                      170,
+                                                      250))
+knitr::kable(tbl_health_int)
+knitr::kable(tbl_health_sb, escape = FALSE)
+
+```
+
+wobei $D_1$ und $D_2$ die Mastdauer für Jungbullen und Mastrinder sind.
+
+
+Die Kosten (in FF) für die Besamungen/Belegungen sind in der folgenden Tabelle zusammengefasst. In der Kalbfleischproduktion werden ein Drittel der Kühe künstlich besamt. Alle anderen Kühe in allen anderen Produktionssystemen werden mit Natursprung belegt.
+
+```{r tbl-insem, echo=FALSE}
+tbl_insem <- tibble::tibble(Tierklasse = c('Rinder mit künstlicher Besamung',
+                                           'Kühe mit Natursprung'),
+                            Kosten = c(240, 210))
+knitr::kable(tbl_insem)
+```
+
+
+### Fütterung
+Die Futterkosten sind in der folgenden Tabelle aufgelistet.
+
+```{r tbl-feed, echo=FALSE}
+tbl_feed <- tibble::tibble(Futter = c('Heu',
+                                      'Gras',
+                                      'Maissilage',
+                                      'Triticale',
+                                      'Soyaölkuchen',
+                                      'Kälberkraftfutter',
+                                      'Milchpulver'),
+                           `Energiegehalt (UFL / kg DM)` = c(0.63, 0.85, 0.90, 1.21, 1.17, 1.00, 2.08),
+                           `Puffer (UEL / kg DM)` = c(1.16, 1.02, 1.13, '*', '*', '*', '*'),
+                           `Kosten in FF / kg DM` = c(0.21, 0.06, 0.34, 0.51, 1.70, 1.55, 10.42))
+knitr::kable(tbl_feed)
+```
+
+
+### Produktionsbedingungen
+Alter und Gewicht für die verschiedenen Produktionssysteme sind in der folgenden Tabelle gezeigt.
+
+```{r tbl-prod, echo=FALSE}
+tbl_prod_veal <- tibble::tibble(Parameter = c('Lebendgewicht (kg)', 'Schlachtgewicht (kg)', 'Alter (Tagen)'),
+                                Bullenkälber = c(197,130,135),
+                                Kuhkälber = c(182,120,135))
+tbl_prod_wean <- tibble::tibble(Parameter = c('Lebendgewicht (kg)', 'Alter (Tagen)'),
+                                `Männliche Absetzer` = c(305, 245),
+                                `Weibliche Absetzer` = c(260,245))
+tbl_prod_early <- tibble::tibble(Parameter = c('Lebendgewicht (kg)', 'Schlachtgewicht (kg)', 'Alter (Tagen)'),
+                                 `Bullen (früh)` = c(525, 320, 430),
+                                 `Rinder (früh)` = c(362, 210, 400))
+tbl_prod_classical <- tibble::tibble(Parameter = c('Lebendgewicht (kg)', 'Schlachtgewicht (kg)', 'Alter (Tagen)'),
+                                 `Bullen (klassisch)` = c(590, 360, 480),
+                                 `Rinder (klassisch)` = c(456, 260, 570))
+tbl_prod_late <- tibble::tibble(Parameter = c('Lebendgewicht (kg)', 'Schlachtgewicht (kg)', 'Alter (Tagen)'),
+                                 `Bullen (spät)` = c(656, 400, 530),
+                                 `Rinder (spät)` = c(544, 310, 760))
+
+knitr::kable(tbl_prod_veal)
+knitr::kable(tbl_prod_wean)
+knitr::kable(tbl_prod_early)
+knitr::kable(tbl_prod_classical)
+knitr::kable(tbl_prod_late)
+```
+
+
+## Modellierung des Gewinns
+Es wurde angenommen, dass 25 Merkmale den Gewinn eines Produktionssystems bestimmen. Diese Merkmale wurden in vier Gruppen unterteilt.
+
+1. **Reproduktionsmerkmale**
+    + Geburtsablauf (Score zwischen 1 - ohne Hilfe und 4 - Kaiserschnitt)
+    + Kalbeerfolg als Mass der Fruchtbarkeit der Mutter
+    + Aufzuchtverlust (bis 2 Tage;zwischen Tag 3 und 3 Monaten und zwischen 3 Monaten und 8 Monaten)
+    + Geburtsgewicht
+    + Absetzgewicht (direkt und maternal)
+2. **Schlachtleistungsmerkmale der Kuh**
+    + Zuwachs
+    + letzte Kalbung bis Abgang
+    + Ausschlachtungsgrad
+    + Fleischigkeitsklasse (EUROP)
+3. **Schlachtleistungsmerkmale beim Absetzen/Kalb**
+    + Alter beim Absetzen
+    + Ausschlachtungsgrad
+    + Fleischfarbe
+    + Fleischigkeitsklasse
+    + Muskelentwicklung
+4. **Schlachtleistungsmerkmale bei der Schlachtung**
+    + Zuwachs
+    + Länge der Vormastperiode
+    + Länge der Mastperiode
+    + Ausschlachtungsgrad
+    + Fettabdeckung
+    + Fleischigkeit
+    
+    
+# Literatur 
