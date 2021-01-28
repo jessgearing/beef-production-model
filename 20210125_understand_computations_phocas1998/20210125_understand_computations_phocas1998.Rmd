@@ -1,0 +1,53 @@
+---
+title: "Understanding Computations in Phoccas 1998"
+author: "Peter von Rohr"
+date: "1/25/2021"
+output:
+  bookdown::pdf_document2: default
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# rmdhelp::show_knit_hook_call()
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+met <- rmdhelp::MendeleyExportToolR6$new()
+```
+
+# Disclaimer
+The first step in the project 'Beef Production Model' is to be able to reproduce the computations done in `r met$add('Phocas1998')`. In what follows, we try to explain what is described in section 2 ff. Due problems with replicating the results in this paper, the focus was switched to Albera et al. (2004).
+
+
+# Development of a breeding objective
+The development of a breeding objective requires three components
+
+1. description of a typical production system
+2. modeling profit of a herd from the described production system
+3. derivation of economic values
+
+Due to the diversity of the different production systems, economic values must be derived for every production system separately. An overall breeding objective is then obtained by averaging over all production systems. 
+
+
+## Description of herd management
+Data for the parametrisation of the model is obtained from a network of a number of herds which are monitored by the agricultural field office. 
+
+### Replacement and culling policy
+The herd composition is shown in Figure \@ref(fig:herddemographics). 
+
+```{r herddemographics, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg", fig.cap='Demography of a typical Limousin herd'}
+#rmdhelp::use_odg_graphic(ps_path = 'odg/herddemographics.odg')
+knitr::include_graphics(path = "odg/herddemographics.png")
+```
+
+The number of cows ($N$) in the herd is kept constant by setting the number of cows culled equal to the number of replacement heifers. The replacement heifers are chosen from the daughters of multiparous cows. Calvings are 
+
+
+# Modeling Profit
+The 25 biological parameters affecting profit are separated into four groups
+
+1. Breeding traits: 
+
+
+
+
+# References 
