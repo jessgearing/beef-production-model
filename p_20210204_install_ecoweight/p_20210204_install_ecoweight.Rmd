@@ -1,0 +1,62 @@
+---
+title: "Installation of ECOWEIGHT"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output:
+  bookdown::pdf_document2: 
+  output_format: default
+header-includes:
+- \usepackage{xcolor}
+- \usepackage{lscape}  
+- \usepackage{titling}
+- \pretitle{\vspace{-2cm} \begin{center} \includegraphics[width=\linewidth]{logo/quag_logo.png}\LARGE\\}
+- \posttitle{\end{center}}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \setlength{\voffset}{-0.5cm}
+- \setlength{\headsep}{5pt}
+- \renewcommand{\contentsname}{Inhalt}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# Disclaimer
+The program ECOWEIGHT is installed on 2-htz. The installation process is documented here.
+
+
+# Source
+The .tar.gz program is obtained from Emil Krupa. 
+
+
+# Installation
+The program is installed with the following steps
+
+```
+  665  cd source
+  667  mkdir ecoweight
+  # download from google-drive to MacBook and scp to 2-htz from MacBook
+  675  tar xvzf EWBC_2019_Angus_Ubuntu20_04_64bit.tgz 
+  685  mv EWBC_2019_Angus /qualstorzws01/data_projekte/linuxBin/
+  686  cd /qualstorzws01/data_projekte/linuxBin/
+  690  sudo chown quagadmin:zwsgrp -R EWBC_2019_Angus/
+  693  cd EWBC_2019_Angus/
+  695  chmod 775 ewbc 
+  697  cd ..
+  698  ln -s EWBC_2019_Angus/ewbc ewbc
+```
+
+The installation is described in chapter 3 of the manual.
+
+# Tests
+The program is tested according to the manual under: /qualstorzws01/data_projekte/linuxBin/EWBC_2019_Angus/DOC/ECOWEIGHT01.pdf
+
+Tests are done with user `pvr`.
+
+Section 3.3 gives details about how to run the programs.
+
+Running the program indicates that glibc-2.29 is required, hence update
+
