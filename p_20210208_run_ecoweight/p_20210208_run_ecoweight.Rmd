@@ -1,0 +1,83 @@
+---
+title: "Tutorial on How To Run EWBC"
+author: "Peter von Rohr"
+date: '2021-02-08'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# rmdhelp::show_knit_hook_call()
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+
+# Disclaimer
+This document contains some instructions on how to run the program 'ewbc'.
+
+
+# General Running Mode
+The program 'ewbc' is a command-line program. It seams to work from the 'Terminal' inside of RStudio (see screenshot).
+
+```{r run-ewbc-terminal, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = 'odg/run-ewbc-terminal.odg')
+knitr::include_graphics(path = "odg/run-ewbc-terminal.png")
+```
+
+When you opened a 'Terminal' in RStudio, then you can enter the commands that are shown below. 
+
+
+# Preparation 
+The preparatory steps consist of 
+
+1. creating a directory for the analysis
+2. change the current working directory to that newly created directory
+3. copy all input-files into the newly created directory
+4. running the program 'ewbc' with the given parameters
+
+For any given analysis the steps 1-3 must only be done once. For a new analysis which is sufficiently different from the previous analysis with, e.g. a different production system or a different breed, all four steps must be repeated, but the name of the newly created directory must be different between the current and any previous analyses.
+
+
+## Creating a new directory
+A new directory with the name 'ecoweighttest' is created with the following command that is to be entered at the 'Terminal'. 
+
+```
+mkdir ecoweighttest
+```
+
+
+## Change current working directory
+The current working directory is changed into the newly created directory with 
+
+```
+cd ecoweighttest
+```
+
+
+## Copy input
+The input required by 'ewbc' is copied into the newly created directory with the following command
+
+```
+cp /qualstorzws01/data_projekte/linuxBin/EWBC_2019_Angus/INPUT*.TXT \
+/qualstorzws01/data_projekte/linuxBin/EWBC_2019_Angus/PARA.TXT \
+/qualstorzws01/data_projekte/linuxBin/EWBC_2019_Angus/TEXT_OUT.TXT .
+```
+
+The dot at the end of the above statement is important.
+
+
+## Running ewbc
+If necessary, the input files must be changed. Once the input is adapted, then the program can be run with the following command 
+```
+ewbc
+```
+
+
+# Overview
+The following screenshot shows how all the commands are entered into the 'Terminal'
+
+```{r run-ewbc-summary, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = 'odg/run-ewbc-summary.odg')
+knitr::include_graphics(path = "odg/run-ewbc-summary.png")
+```
+ 
