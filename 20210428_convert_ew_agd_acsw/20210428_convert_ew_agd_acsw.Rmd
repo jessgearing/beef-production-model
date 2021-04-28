@@ -1,0 +1,121 @@
+---
+title: "Convert Economic Weights from AGD to ACSW"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Disclaimer
+This document describes the conversion of the economic weight of average daily gain (AGD) to age corrected slaughter weight (ACSW). 
+
+
+# Background
+The program ECOWEIGHT (ewbc) use AGD as the reference trait to describe the growth of an animal in a certain period, e.g. the fattening period. Since the most recent update of the genetic evaluation procedure in Swiss Beef Cattle Breeding, the reference trait for growth was changed from average daily gain to age corrected slaughter weight. Therefore, we have to convert the economic weight of AGD to the economic weight of ACSW.
+
+
+# Terminology and Definition
+## Average Daily Gain
+For a certain period $p$, average daily gain ($adg_p$) is defined as 
+
+$$adg_p = \frac{\Delta W_p}{t_p}$$
+
+where $\Delta W_p$ is the difference between the weight of the animal at the end of the period $p$ and the beginning of the period $p$. Hence
+
+$$\Delta W_p = W_{p,end} - W_{p,start}$$
+The term $t_p$ is the duration of the period $p$ (in days). 
+
+
+## Age Corrected Slaughter Weight
+The trait ACSW can only be understood in the context of the evaluation model. In this model, the observation of the slaughter weight for animal $i$ is denoted by $y_i$
+
+$$y_i = b_0 + b_1 * x_{1,i} + b_2 * x_{1,i}^2 + b_3 * x_{2,i} + u_i + e_i$$
+with $x_{1,i}$ is the age of animal $i$. Then ACSW is defined as 
+
+$$ACSW = y_i - b_1 * x_{1,i} - b_2 * x_{1,i}^2 $$
+where $b_1$ and $b_2$ are the regression coefficients of the linear and the quadratic age correction. 
+
+
+# Economic Weights
+Economic weight of a given trait $T$ is defined as the marginal change in profit caused by a small change of the population mean of the trait $T$. 
+
+$$EW_T = \frac{\partial P}{\partial \mu_T}$$
+
+In practice the partial derivative is approximated by a change of profit when then mean changes by a small amount. This means, we establish a base scenario of a production system where all parameters and traits are taken at their current population mean. Then the profit $P_0$ for that base scenario is computed. Then $\mu_T$ is changed by a small amount $\Delta \mu_T$. This then results in a profit $P_1$ which is different from $P_0$ Then the economic weight $EW_T$ is approximated by
+
+$$EW_T \approx \frac{P_1 - P_0}{\Delta \mu_T} = \frac{\Delta P}{\Delta \mu_T}$$
+
+
+## ADG
+Assuming that the unit of the trait ADG is in grams per day $\left[g/d\right]$, a typical change $\Delta \mu_{ADG}$ of the population mean would be  $\Delta \mu_{ADG} = 1 g/d$. Hence a given value of the economic weight $EW_{ADG}$ for ADG means that the change in profit $\Delta P$ can be computed as 
+
+$$\Delta P =  \Delta \mu_{ADG} * EW_{ADG}$$
+
+
+## Conversion
+An increase in the population mean of ADG by an amount of $\Delta \mu_{ADG}$ can be achieved in two different ways. 
+
+1. The duration $t_p$ of the period $p$ is shortend by letting the slaughter weight constant. 
+2. The slaughter weight is increased and the duration of the period $p$ is constant.
+
+
+## Shorter Period
+How much the period will be shorter when ADG is increased by $\Delta \mu_{ADG}$ can be computed as follows
+
+$$
+\Delta \mu_{ADG} = \frac{\Delta W_p}{t_{p,1}} - \frac{\Delta W_p}{t_{p,0}} 
+= \frac{\Delta W_p(t_{p,0} - t_{p,1})}{t_{p,0} * t_{p,1}} 
+$$
+with $t_{p,0}$ being the length of the period $p$ in the base scenario and $t_{p,1}$ is the unknown length of the shorter period. This can be computed as
+
+$$\Delta \mu_{ADG}* t_{p,0} * t_{p,1} = \Delta W_p * t_{p,0} - \Delta W_p * t_{p,1}$$
+
+Solving the above for $t_{p,1}$ leads to 
+
+$$t_{p,1} = \frac{\Delta W_p * t_{p,0}}{\Delta \mu_{ADG}* t_{p,0} + \Delta W_p}$$
+
+
+## Increasing Slaughter Weight
+In this scenario, the duration $t_p$ of period $p$ remains constant. Hence 
+
+$$\Delta \mu_{ADG} = \frac{\Delta W_{p,1} - \Delta W_{p,0}}{t_p} 
+= \frac{(W_{p,end,1}- W_{p,start,1}) - (W_{p,end,0}- W_{p,start,0})}{t_p}
+= \frac{W_{p,end,1} - W_{p,end,0}}{t_p} = \frac{\Delta W_{p,end}}{t_p}$$
+
+The change in the slaughter weight is given by
+
+$$\Delta W_{p,end} = t_p * \Delta \mu_{ADG}$$
+
+For a given increase $\Delta \mu_{ADG}$, the increased slaughter weight $\Delta W_{p,end}$ is 
+
+$$W_{p,end,1} = {t_p} * \Delta \mu_{ADG} + W_{p,end,0}$$
+
+
+## Economic Weight for ACSW
+The aim is to compute the EW for ACSW based on the input and the computations from above. Based on the general definition of EW we can state that 
+
+$$EW_{ACSW} \approx \frac{\Delta P}{\Delta \mu_{ACSW}}$$
+
+From above, we saw that the change in profit $\Delta P$ can be computed based on $EW_{ADG}$ and $\Delta \mu_{ADG}$ as 
+
+$$\Delta P = \Delta \mu_{ADG} * EW_{ADG}$$
+
+Furthermore the change in the mean ACSW is obtained from 
+
+$$\Delta \mu_{ACSW} = t_p * \Delta \mu_{ADG}$$
+
+Combining that leads to
+
+$$EW_{ACSW} \approx \frac{\Delta P}{\Delta \mu_{ACSW}} 
+= \frac{\Delta \mu_{ADG} * EW_{ADG}}{t_p * \Delta \mu_{ADG}}
+= \frac{EW_{ADG}}{t_p}$$
+
+
+The unit of $EW_{ACSW}$ depends on the unit of $t_p$ and on the unit of $EW_{ADG}$. If the unit of $t_p$ is days ($\left[d \right]$) and the unit of $EW_{ADG}$ is $\left[SFr / (g/d) \right]$, then the unit of $EW_{ACSW}$ is $\left[SFr / g \right]$. If we want $EW_{ACSW}$ in Swiss Francs per kg weight increase, then the above computed value of $EW_{ACSW}$ must be multiplied by $1000$. 
+
+
