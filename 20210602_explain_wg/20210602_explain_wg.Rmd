@@ -78,6 +78,8 @@ p2 <- ggplot(data.frame(x = c(-3, 5)), aes(x)) +
 p2
 ```
 
+The above diagram shows computation of the average revenue across the complete population for two different price classes.
+
 
 ## Explain WG
 
