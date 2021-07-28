@@ -1,0 +1,100 @@
+---
+title: "Add Explanatory Slide For WG"
+author: "Peter von Rohr"
+date: "6/2/2021"
+output:
+  pdf_document: default
+  powerpoint_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# rmdhelp::show_knit_hook_call()
+knitr::knit_hooks$set(hook_convert_odg = rmdhelp::hook_convert_odg)
+```
+
+## Plot Normal distribution
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+n_cw_mean <- 272
+n_cw_mean_changed <- n_cw_mean + 2
+n_cw_sd <- 3
+p1 <- ggplot(data = data.frame(x = c(n_cw_mean-3*n_cw_sd, n_cw_mean+3*n_cw_sd)), aes(x)) +
+  stat_function(fun = dnorm, 
+                n = 101, 
+                args = list(mean = n_cw_mean, sd = n_cw_sd)) + 
+  ylab("") +
+  stat_function(fun = dnorm, 
+                n = 101, 
+                args = list(mean = n_cw_mean_changed, sd = n_cw_sd)) + 
+  ylab("") +
+  xlab("") +
+  scale_x_continuous(breaks = NULL) +
+  scale_y_continuous(breaks = NULL) + 
+  geom_vline(xintercept = n_cw_mean, linetype = "dashed")+ 
+  geom_vline(xintercept = n_cw_mean_changed, linetype = "dashed")
+p1
+# ggsave("cw_normal_density.pdf", plot = p1)
+```
+
+
+## Normal Distributions With Areas
+The following examples are taken from https://ggplot2tutor.com/tutorials/sampling_distributions
+
+```{r}
+p2 <- ggplot(data.frame(x = c(-3, 5)), aes(x)) +
+  stat_function(
+    fun = dnorm,
+    geom = "line") + 
+  stat_function(
+    fun = dnorm,
+    geom = "area",
+    fill = "orange",
+    xlim = c(1.5, 4)
+  ) +
+  stat_function(
+    fun = dnorm,
+    geom = "line",
+    args = list(
+      mean = 1)
+  ) + 
+  stat_function(
+    fun = dnorm,
+    geom = "area",
+    fill = "orange",
+    alpha = 0.35,
+    args = list(
+      mean = 1
+    ), 
+    xlim = c(1.5, 4)
+  ) +
+  xlab("") +
+  ylab("") +
+  scale_x_continuous(breaks = NULL) +
+  scale_y_continuous(breaks = NULL)
+p2
+```
+
+
+## Explain WG
+
+```{r explain-wg, echo=FALSE, hook_convert_odg=TRUE, fig_path="odg"}
+#rmdhelp::use_odg_graphic(ps_path = "odg/explain-wg.odg")
+knitr::include_graphics(path = "odg/explain-wg.png")
+```
+ 
+ 
+## Computation of WG
+$$\mu_0 = 272$$
+
+$$\mu_1 = 273$$
+
+$$G_0 = E_0 - K_0 $$
+
+$$G_1 = E_1 - K_1$$
+
+
+$$WG = G_1 - G_0$$
