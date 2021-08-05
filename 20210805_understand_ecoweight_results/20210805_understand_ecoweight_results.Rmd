@@ -1,0 +1,16 @@
+---
+title: Understanding Ecoweight Results
+author: Peter von Rohr
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Disclaimer 
+
+
+# Results
+Results used in the presentation are on 2-htz in the directory: '/qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21'. 
