@@ -1,0 +1,55 @@
+---
+title: Understand Results of EW in Fleshiness
+author: Peter von Rohr
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Disclaimer 
+Material to understand the results of economic values for fleshiness for the breeds LI and AN.
+
+
+# Observations
+In general, the lower the population mean, the higher the economic value for a trait which does not show any optimum range. An exception is the trait fleshiness for natura beef where LI has a higher population mean and a higher economic weight compared to AN.
+
+
+# Goal
+Find the reason for the above stated observaions.
+
+
+# Reproduce Evaluation with ECOWEIGHT
+The most recent analysis was done in `/qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef`. In that directory there are two subdirectories for the two different breeds LI and AN. 
+
+
+# Comparison between Input
+We start by comparing the input files for the different breeds.
+
+```
+cd;cd beef_production_model/fleshiness_nb_results
+ls -1 /qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef/Limousin/input_files/INPUT*.TXT | while read f;do echo $(basename $f) >> input_files.txt;done
+ls -1 /qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef/Limousin/input_files/CHECK* | while read f;do echo $(basename $f) >> input_files.txt;done
+ls -1 /qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef/Limousin/input_files/PARA.TXT | while read f;do echo $(basename $f) >> input_files.txt;done
+
+cat input_files.txt | while read f
+do
+  (echo " * Comparing input: $f ...";diff /qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef/Limousin/input_files/$f /qualstorzws01/data_projekte/projekte/beef-production-model/final_markdowns_15_07_21/NaturaBeef/Angus/input_files/$f) >> input_compare_results.txt
+  sleep 2
+done
+```
+
+Inspecting the diff-out shows differences in the following files
+
+* input02: parameters of reproductive cycle of cows
+* input03: parameters for cows and heifers on pasture, including milk content, pasture yield, ...
+* input04: parameters for breeding bulls
+* input06: weights of offspring and weight of breeding bulls in the herd
+* input08: parameters for intensively fattened bulls
+* input10: parameters for fattening of heifers and castrates
+* input16: matrices of frequencies and prices for fleshiness and fat coverage for bulls
+* input17: matrices of frequencies and prices for fleshiness and fat coverage for heifers and castrates
+...
+
